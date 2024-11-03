@@ -1,5 +1,6 @@
 use anchor_client::ClientError;
 use anchor_lang::Discriminator;
+use anchor_lang::__private::base64::engine::Engine;
 use anyhow::Result;
 use colorful::Color;
 use colorful::Colorful;
@@ -121,13 +122,14 @@ pub fn handle_program_log(
             // not log event
             return Ok((None, false));
         }
-        let borsh_bytes = match anchor_lang::__private::base64::decode(log) {
-            Ok(borsh_bytes) => borsh_bytes,
-            _ => {
-                println!("Could not base64 decode log: {}", log);
-                return Ok((None, false));
-            }
-        };
+        let borsh_bytes =
+            match anchor_lang::__private::base64::engine::general_purpose::STANDARD.decode(log) {
+                Ok(borsh_bytes) => borsh_bytes,
+                _ => {
+                    println!("Could not base64 decode log: {}", log);
+                    return Ok((None, false));
+                }
+            };
 
         let mut slice: &[u8] = &borsh_bytes[..];
         let disc: [u8; 8] = {
@@ -276,13 +278,16 @@ pub fn handle_program_instruction(
             data = hex::decode(instr_data).unwrap();
         }
         InstructionDecodeType::Base64 => {
-            let borsh_bytes = match anchor_lang::__private::base64::decode(instr_data) {
-                Ok(borsh_bytes) => borsh_bytes,
-                _ => {
-                    println!("Could not base64 decode instruction: {}", instr_data);
-                    return Ok(());
-                }
-            };
+            let borsh_bytes =
+                match anchor_lang::__private::base64::engine::general_purpose::STANDARD
+                    .decode(instr_data)
+                {
+                    Ok(borsh_bytes) => borsh_bytes,
+                    _ => {
+                        println!("Could not base64 decode instruction: {}", instr_data);
+                        return Ok(());
+                    }
+                };
             data = borsh_bytes;
         }
         InstructionDecodeType::Base58 => {
