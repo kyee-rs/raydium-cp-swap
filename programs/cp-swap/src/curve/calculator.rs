@@ -227,22 +227,17 @@ pub mod test {
             TradeDirection::ZeroForOne => (swap_source_amount, swap_destination_amount),
             TradeDirection::OneForZero => (swap_destination_amount, swap_source_amount),
         };
-        let previous_value = swap_token_0_amount
-            .checked_mul(swap_token_1_amount)
-            .unwrap();
+        let previous_value = swap_token_0_amount.saturating_mul(swap_token_1_amount);
 
-        let new_swap_source_amount = swap_source_amount.checked_add(source_token_amount).unwrap();
-        let new_swap_destination_amount = swap_destination_amount
-            .checked_sub(destination_amount_swapped)
-            .unwrap();
+        let new_swap_source_amount = swap_source_amount.saturating_add(source_token_amount);
+        let new_swap_destination_amount =
+            swap_destination_amount.saturating_sub(destination_amount_swapped);
         let (swap_token_0_amount, swap_token_1_amount) = match trade_direction {
             TradeDirection::ZeroForOne => (new_swap_source_amount, new_swap_destination_amount),
             TradeDirection::OneForZero => (new_swap_destination_amount, new_swap_source_amount),
         };
 
-        let new_value = swap_token_0_amount
-            .checked_mul(swap_token_1_amount)
-            .unwrap();
+        let new_value = swap_token_0_amount.saturating_mul(swap_token_1_amount);
         assert!(new_value >= previous_value);
     }
 

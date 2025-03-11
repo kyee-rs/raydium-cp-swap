@@ -141,12 +141,8 @@ impl PoolState {
 
     pub fn vault_amount_without_fee(&self, vault_0: u64, vault_1: u64) -> (u64, u64) {
         (
-            vault_0
-                .checked_sub(self.protocol_fees_token_0 + self.fund_fees_token_0)
-                .unwrap(),
-            vault_1
-                .checked_sub(self.protocol_fees_token_1 + self.fund_fees_token_1)
-                .unwrap(),
+            vault_0.saturating_sub(self.protocol_fees_token_0 + self.fund_fees_token_0),
+            vault_1.saturating_sub(self.protocol_fees_token_1 + self.fund_fees_token_1),
         )
     }
 

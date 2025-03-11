@@ -19,12 +19,8 @@ devnet = []
 client = []
 
 [dependencies]
-anchor-lang = { git = "https://github.com/coral-xyz/anchor.git", branch = "master", features = [
-    "init-if-needed",
-] }
-anchor-spl = { git = "https://github.com/coral-xyz/anchor.git", branch = "master", features = [
-    "metadata",
-] }
+anchor-lang = { version = "0.31.0", features = ["init-if-needed"] }
+anchor-spl = { version = "0.31.0", features = ["metadata"] }
 spl-token = { version = "7.0.0", features = ["no-entrypoint"] }
 spl-math = { version = "0.3.0", features = ["no-entrypoint"] }
 spl-memo = "6.0.0"
